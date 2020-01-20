@@ -9,21 +9,26 @@ namespace DaOfSales.Test
 {
     public class DataParserHelperTest
     {
+        private readonly IDataParserHelper _dataParserHelper;
+
+        public DataParserHelperTest()
+        {
+            _dataParserHelper = new DataParserHelper();
+        }
+
         [Fact]
         public void shouldBeAbleToProcessTheLineOfSalesman()
         {            
-            var line = "001ç1234567891234çDiegoç50000";
+            var line = "001Ã§1234567891234Ã§DiegoÃ§50000";
 
             var salesmanExp = new Salesman
             {
                 Cpf = "1234567891234",
                 Name = "Diego",
                 Salary = 50000
-            };
+            };            
 
-            DataParserHelper dataParserHelper = new DataParserHelper();
-
-            var salesman = dataParserHelper.Parser(line);
+            var salesman = _dataParserHelper.Parser(line);
 
             salesman.Should().NotBeNull();
             salesman.Should().Be(salesmanExp);
@@ -32,18 +37,16 @@ namespace DaOfSales.Test
         [Fact]
         public void shouldBeAbleToProcessTheLineOfCustomer()
         {
-            var line = "002ç2345675434544345çJose da SilvaçRural";
+            var line = "002Ã§2345675434544345Ã§Jose da SilvaÃ§Rural";
 
             var customerExp = new Customer
             {
                 Cnpj = "2345675434544345",
                 Name = "Jose da Silva",
                 BusinessArea = "Rural"
-            };
+            };            
 
-            DataParserHelper dataParserHelper = new DataParserHelper();
-
-            var customer = dataParserHelper.Parser(line);
+            var customer = _dataParserHelper.Parser(line);
 
             customer.Should().NotBeNull();
             customer.Should().Be(customerExp);
@@ -52,7 +55,7 @@ namespace DaOfSales.Test
         [Fact]
         public void shouldBeAbleToProcessTheLineOfSales()
         {
-            var line = "003ç10ç[1-10-100,2-30-2.50,3-40-3.10]çDiego";
+            var line = "003Ã§10Ã§[1-10-100,2-30-2.50,3-40-3.10]Ã§Diego";
 
             var salesItemsExp = new List<SalesItem>
             {
@@ -81,11 +84,9 @@ namespace DaOfSales.Test
                 SalesId = "10",
                 Items = salesItemsExp,
                 SalesmanName = "Diego"
-            };
+            };            
 
-            DataParserHelper dataParserHelper = new DataParserHelper();
-
-            var sales = dataParserHelper.Parser(line);
+            var sales = _dataParserHelper.Parser(line);
 
             sales.Should().NotBeNull();
             sales.Should().Be(salesExp);
@@ -96,11 +97,9 @@ namespace DaOfSales.Test
         [Fact]
         public void shouldEnsureTypeIsValid()
         {
-            var line = "000ç1234567891234çDiegoç50000";
+            var line = "000Ã§1234567891234Ã§DiegoÃ§50000";            
 
-            DataParserHelper dataParserHelper = new DataParserHelper();
-
-            var abstractEntity = dataParserHelper.Parser(line);
+            var abstractEntity = _dataParserHelper.Parser(line);
 
             abstractEntity.Should().BeNull();
         }

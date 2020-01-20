@@ -1,19 +1,22 @@
 ﻿using DaOfSales.Domain.Models;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace DaOfSales.Domain
 {
     public class FileProcessor: IFileProcessor
     {        
-        private DataParserHelper _dataParserHelper;
+        private IDataParserHelper _dataParserHelper;
+        private ILogger<FileProcessor> _logger;
 
-        public FileProcessor()
+        public FileProcessor(ILogger<FileProcessor> logger,
+            IDataParserHelper dataParserHelper)
         {            
-            _dataParserHelper = new DataParserHelper();
+            _dataParserHelper = dataParserHelper;
+            _logger = logger;
         }
 
         public SummaryResult SummarizeFile(string filePath)
@@ -22,7 +25,7 @@ namespace DaOfSales.Domain
             {
                 try
                 {
-                    List<AbstractEntity> entities = new List<AbstractEntity>();
+                    var entities = new List<AbstractEntity>();
 
                     using (StreamReader file = new StreamReader(filePath))
                     {
@@ -53,7 +56,7 @@ namespace DaOfSales.Domain
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex);
+                    _logger.LogError(ex.Message);
                 }
             }
 
