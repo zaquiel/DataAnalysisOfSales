@@ -59,7 +59,7 @@ namespace DaOfSales.Domain
                 {
                     ItemId = x.Split("-")[0],
                     Quantity = int.Parse(x.Split("-")[1]),
-                    Price = double.Parse(x.Split("-")[2].Replace(".", ","))
+                    Price = double.Parse(x.Split("-")[2])
                 }).ToList(),
                 SalesmanName = lineArray[3]
             };

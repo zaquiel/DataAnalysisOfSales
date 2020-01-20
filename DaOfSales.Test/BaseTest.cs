@@ -3,39 +3,47 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using DaOfSales.Domain;
 using DaOfSales.Domain.Models;
 
 namespace DaOfSales.Test
 {
     public abstract class BaseTest
     {
-        public PathConfigurations PathConfigurations { get; set; }
+        protected PathConfigurations PathConfigurations { get; set; }
+
+        private readonly IDataParserHelper _dataParserHelper;
 
         public BaseTest()
         {
-            
+            _dataParserHelper = new DataParserHelper();
         }
 
-        public void Initialize()
+        protected AbstractEntity ParserHelper(string line)
+        {
+            return _dataParserHelper.Parser(line);
+        }
+
+        protected void Initialize()
         {
 
             PathConfigurations = new PathConfigurations
             {
-                RootPathIn = @".\DataIn\",
-                RootPathOut = @".\DataOut\",
-                RootPathProcessing = @".\DataProcessing\"
+                RootPathIn = @"DataIn",
+                RootPathOut = @"DataOut",
+                RootPathProcessing = @"DataProcessing"
             };
 
-            var files = Directory.GetFiles(@".\BaseTestFiles\", "*.dat", SearchOption.AllDirectories).ToList();            
+            var files = Directory.GetFiles(@"BaseTestFiles/", "*.dat", SearchOption.AllDirectories).ToList();            
 
             files.ForEach(x =>
             {
-                var destination = $@".\DataIn\{Path.GetFileName(x)}";
+                var destination = Path.Combine(PathConfigurations.RootPathIn, Path.GetFileName(x));
                 if (!File.Exists(destination))
                 {
                     File.Copy(x, destination);
                 }
             });
-        }
+        }        
     }
 }

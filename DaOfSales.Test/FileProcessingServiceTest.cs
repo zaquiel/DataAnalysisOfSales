@@ -2,6 +2,7 @@
 using DaOfSales.Domain.Models;
 using DaOfSales.Services;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -17,26 +18,19 @@ namespace DaOfSales.Test
         private readonly IFileProcessingService _fileProcessingService;
         private readonly Mock<IFileManagement> _fileManagementMock;
         private readonly Mock<IFileProcessor> _fileProcessorMock;
+        private readonly Mock<ILogger<FileProcessingService>> _logger;
 
         public FileProcessingServiceTest()
         {
             _fileManagementMock = new Mock<IFileManagement>();
             _fileProcessorMock = new Mock<IFileProcessor>();
+            _logger = new Mock<ILogger<FileProcessingService>>();
 
-            _fileProcessingService = new FileProcessingService(_fileManagementMock.Object, _fileProcessorMock.Object);
+            _fileProcessingService = new FileProcessingService(_logger.Object, 
+                _fileManagementMock.Object, _fileProcessorMock.Object);
 
             base.Initialize();
 
-        }
-
-        [Fact]
-        public void ShouldEnsureThatTheDirectoriesAreCreated()
-        {
-            var fileProcessingService = new FileProcessingService(_fileManagementMock.Object, _fileProcessorMock.Object);
-
-            Directory.Exists(fileProcessingService.Configuration.RootPathIn).Should().BeTrue();
-            Directory.Exists(fileProcessingService.Configuration.RootPathOut).Should().BeTrue();
-            Directory.Exists(fileProcessingService.Configuration.RootPathGarbage).Should().BeTrue();
         }
 
         [Fact]
@@ -56,20 +50,22 @@ namespace DaOfSales.Test
                 WorstSalesman = "fulano"
             };
 
-            var files = _fileManagementMock.Setup(x => x.Scanner(It.IsAny<Configuration>())).Returns(filesTest);
+            var fileProcessing = Path.Combine(PathConfigurations.RootPathProcessing,filesTest[0]);
 
-            var response = _fileProcessorMock.Setup(x => x.SummarizeFile(filesTest[0])).Returns(summaryResult);
+            _fileManagementMock.Setup(x => x.Scanner()).Returns(filesTest);
 
-            _fileManagementMock.Setup(x => x.SaveFile(summaryResult, It.IsAny<Configuration>()));
-            _fileManagementMock.Setup(x => x.MoveForGarbage(filesTest[0], It.IsAny<Configuration>()));
+            _fileManagementMock.Setup(x => x.MoveForProcessing(filesTest[0])).Returns(fileProcessing);
+
+            var response = _fileProcessorMock.Setup(x => x.SummarizeFile(fileProcessing)).Returns(summaryResult);
+
+            _fileManagementMock.Setup(x => x.SaveFile(summaryResult));
 
             _fileProcessingService.ProcessFiles();
 
-            _fileManagementMock.Verify(x => x.Scanner(It.IsAny<Configuration>()), Times.Once);
-            _fileProcessorMock.Verify(x => x.SummarizeFile(filesTest[0]), Times.Once);
-
-            _fileManagementMock.Verify(x => x.SaveFile(summaryResult, It.IsAny<Configuration>()), Times.Once);
-            _fileManagementMock.Verify(x => x.MoveForGarbage(filesTest[0], It.IsAny<Configuration>()), Times.Once);
+            _fileManagementMock.Verify(x => x.Scanner(), Times.Once);
+            _fileManagementMock.Verify(x => x.MoveForProcessing(filesTest[0]), Times.Once);
+            _fileProcessorMock.Verify(x => x.SummarizeFile(fileProcessing), Times.Once);
+            _fileManagementMock.Verify(x => x.SaveFile(summaryResult), Times.Once);
         }
 
         [Fact]
@@ -86,20 +82,20 @@ namespace DaOfSales.Test
                 WorstSalesman = "fulano"
             };
 
-            var files = _fileManagementMock.Setup(x => x.Scanner(It.IsAny<Configuration>())).Returns(filesTest);
+            _fileManagementMock.Setup(x => x.Scanner()).Returns(filesTest);
 
-            var response = _fileProcessorMock.Setup(x => x.SummarizeFile(It.IsAny<string>())).Returns(summaryResult);
+            _fileProcessorMock.Setup(x => x.SummarizeFile(It.IsAny<string>())).Returns(summaryResult);
 
-            _fileManagementMock.Setup(x => x.SaveFile(summaryResult, It.IsAny<Configuration>()));
-            _fileManagementMock.Setup(x => x.MoveForGarbage(It.IsAny<string>(), It.IsAny<Configuration>()));
+            _fileManagementMock.Setup(x => x.SaveFile(summaryResult));
+            _fileManagementMock.Setup(x => x.MoveForProcessing(It.IsAny<string>()));
 
             _fileProcessingService.ProcessFiles();
 
-            _fileManagementMock.Verify(x => x.Scanner(It.IsAny<Configuration>()), Times.Once);
+            _fileManagementMock.Verify(x => x.Scanner(), Times.Once);
             _fileProcessorMock.Verify(x => x.SummarizeFile(It.IsAny<string>()), Times.Never);
 
-            _fileManagementMock.Verify(x => x.SaveFile(summaryResult, It.IsAny<Configuration>()), Times.Never);
-            _fileManagementMock.Verify(x => x.MoveForGarbage(It.IsAny<string>(), It.IsAny<Configuration>()), Times.Never);
+            _fileManagementMock.Verify(x => x.SaveFile(summaryResult), Times.Never);
+            _fileManagementMock.Verify(x => x.MoveForProcessing(It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -112,20 +108,20 @@ namespace DaOfSales.Test
 
             SummaryResult summaryResult = null;
 
-            var files = _fileManagementMock.Setup(x => x.Scanner(It.IsAny<Configuration>())).Returns(filesTest);
+            _fileManagementMock.Setup(x => x.Scanner()).Returns(filesTest);
 
-            var response = _fileProcessorMock.Setup(x => x.SummarizeFile(It.IsAny<string>())).Returns(summaryResult);
+            _fileProcessorMock.Setup(x => x.SummarizeFile(It.IsAny<string>())).Returns(summaryResult);
 
-            _fileManagementMock.Setup(x => x.SaveFile(summaryResult, It.IsAny<Configuration>()));
-            _fileManagementMock.Setup(x => x.MoveForGarbage(It.IsAny<string>(), It.IsAny<Configuration>()));
+            _fileManagementMock.Setup(x => x.SaveFile(summaryResult));
+            _fileManagementMock.Setup(x => x.MoveForProcessing(It.IsAny<string>()));
 
             _fileProcessingService.ProcessFiles();
 
-            _fileManagementMock.Verify(x => x.Scanner(It.IsAny<Configuration>()), Times.Once);
+            _fileManagementMock.Verify(x => x.Scanner(), Times.Once);
             _fileProcessorMock.Verify(x => x.SummarizeFile(It.IsAny<string>()), Times.Once);
 
-            _fileManagementMock.Verify(x => x.SaveFile(summaryResult, It.IsAny<Configuration>()), Times.Never);
-            _fileManagementMock.Verify(x => x.MoveForGarbage(It.IsAny<string>(), It.IsAny<Configuration>()), Times.Once);
+            _fileManagementMock.Verify(x => x.SaveFile(summaryResult), Times.Never);
+            _fileManagementMock.Verify(x => x.MoveForProcessing(It.IsAny<string>()), Times.Once);
         }
     }
 }

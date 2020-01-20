@@ -25,7 +25,7 @@ namespace DaOfSales.Domain
         {      
             string[] files = null;
             try
-            {
+            {                
                 files = Directory.GetFiles(_pathConfigurations.Value.RootPathIn, "*.dat", SearchOption.AllDirectories);
             }
             catch (Exception ex)

@@ -9,6 +9,13 @@ namespace DaOfSales.Test
 {
     public class DataParserHelperTest
     {
+        private readonly IDataParserHelper _dataParserHelper;
+
+        public DataParserHelperTest()
+        {
+            _dataParserHelper = new DataParserHelper();
+        }
+
         [Fact]
         public void shouldBeAbleToProcessTheLineOfSalesman()
         {            
@@ -19,11 +26,9 @@ namespace DaOfSales.Test
                 Cpf = "1234567891234",
                 Name = "Diego",
                 Salary = 50000
-            };
+            };            
 
-            DataParserHelper dataParserHelper = new DataParserHelper();
-
-            var salesman = dataParserHelper.Parser(line);
+            var salesman = _dataParserHelper.Parser(line);
 
             salesman.Should().NotBeNull();
             salesman.Should().Be(salesmanExp);
@@ -39,11 +44,9 @@ namespace DaOfSales.Test
                 Cnpj = "2345675434544345",
                 Name = "Jose da Silva",
                 BusinessArea = "Rural"
-            };
+            };            
 
-            DataParserHelper dataParserHelper = new DataParserHelper();
-
-            var customer = dataParserHelper.Parser(line);
+            var customer = _dataParserHelper.Parser(line);
 
             customer.Should().NotBeNull();
             customer.Should().Be(customerExp);
@@ -81,11 +84,9 @@ namespace DaOfSales.Test
                 SalesId = "10",
                 Items = salesItemsExp,
                 SalesmanName = "Diego"
-            };
+            };            
 
-            DataParserHelper dataParserHelper = new DataParserHelper();
-
-            var sales = dataParserHelper.Parser(line);
+            var sales = _dataParserHelper.Parser(line);
 
             sales.Should().NotBeNull();
             sales.Should().Be(salesExp);
@@ -96,11 +97,9 @@ namespace DaOfSales.Test
         [Fact]
         public void shouldEnsureTypeIsValid()
         {
-            var line = "000ç1234567891234çDiegoç50000";
+            var line = "000ç1234567891234çDiegoç50000";            
 
-            DataParserHelper dataParserHelper = new DataParserHelper();
-
-            var abstractEntity = dataParserHelper.Parser(line);
+            var abstractEntity = _dataParserHelper.Parser(line);
 
             abstractEntity.Should().BeNull();
         }
