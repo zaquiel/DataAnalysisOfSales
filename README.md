@@ -17,7 +17,7 @@ System developed in c# (.net core) with the objective to import lots of flat fil
     "RootPathOut": "/home/your user/data/out"
   } 
  ```
- 3) The files to be processed must be placed in the "in" folder (at the root of the project there is a "Sample" folder with sample files). <b>Warning - They will be deleted after processing.<b>
+ 3) The files to be processed must be placed in the "in" folder (at the root of the project there is a "Sample" folder with sample files).
 
 #### Command Line - Makefile
 

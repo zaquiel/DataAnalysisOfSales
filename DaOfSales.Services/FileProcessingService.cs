@@ -33,9 +33,7 @@ namespace DaOfSales.Services
                     if (summaryResult != null)
                     {
                         _fileManagement.SaveFile(summaryResult);
-                    }
-
-                    //delete file                    
+                    }                    
                 }
             }
             catch (Exception ex)
