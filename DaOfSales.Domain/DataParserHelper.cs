@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DaOfSales.Domain
 {
-    public class DataParserHelper
+    public class DataParserHelper: IDataParserHelper
     {
         public AbstractEntity Parser(string line)
         {

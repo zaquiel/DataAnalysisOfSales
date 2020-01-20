@@ -2,14 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DaOfSales.Domain
 {
     public interface IFileManagement
     {
-        List<string> Scanner(Configuration configuration);
-        void SaveFile(SummaryResult summaryResult, Configuration configuration);
+        IEnumerable<string> Scanner();
+        void SaveFile(SummaryResult summaryResult);
 
-        void MoveForGarbage(string filePath, Configuration configuration);
+        string MoveForProcessing(string filePath);
     }
 }

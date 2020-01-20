@@ -12,7 +12,7 @@ namespace DaOfSales.Test
         [Fact]
         public void shouldBeAbleToProcessTheLineOfSalesman()
         {            
-            var line = "001ç1234567891234çDiegoç50000";
+            var line = "001Ã§1234567891234Ã§DiegoÃ§50000";
 
             var salesmanExp = new Salesman
             {
@@ -32,7 +32,7 @@ namespace DaOfSales.Test
         [Fact]
         public void shouldBeAbleToProcessTheLineOfCustomer()
         {
-            var line = "002ç2345675434544345çJose da SilvaçRural";
+            var line = "002Ã§2345675434544345Ã§Jose da SilvaÃ§Rural";
 
             var customerExp = new Customer
             {
@@ -52,7 +52,7 @@ namespace DaOfSales.Test
         [Fact]
         public void shouldBeAbleToProcessTheLineOfSales()
         {
-            var line = "003ç10ç[1-10-100,2-30-2.50,3-40-3.10]çDiego";
+            var line = "003Ã§10Ã§[1-10-100,2-30-2.50,3-40-3.10]Ã§Diego";
 
             var salesItemsExp = new List<SalesItem>
             {
@@ -96,7 +96,7 @@ namespace DaOfSales.Test
         [Fact]
         public void shouldEnsureTypeIsValid()
         {
-            var line = "000ç1234567891234çDiegoç50000";
+            var line = "000Ã§1234567891234Ã§DiegoÃ§50000";
 
             DataParserHelper dataParserHelper = new DataParserHelper();
 

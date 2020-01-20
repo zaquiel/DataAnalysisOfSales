@@ -1,4 +1,6 @@
 ﻿using DaOfSales.Domain.Models;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,37 +11,40 @@ namespace DaOfSales.Domain
 {
     public class FileManagement: IFileManagement
     {        
-        public FileManagement()
+        private readonly IOptions<PathConfigurations> _pathConfigurations;
+        private readonly ILogger<FileManagement> _logger;
+        
+        public FileManagement(ILogger<FileManagement> logger,
+            IOptions<PathConfigurations> pathConfigurations)
         {            
+            _logger = logger;
+            _pathConfigurations = pathConfigurations;
         }
             
-        public List<string> Scanner(Configuration configuration)
-        {
-            var filesPathResult = new List<string>();
-
+        public IEnumerable<string> Scanner()
+        {      
+            string[] files = null;
             try
             {
-                var files = Directory.GetFiles(configuration.RootPathIn, "*.dat", SearchOption.AllDirectories).ToList();
-
-                if (files.Any())
-                {
-                    Console.WriteLine($"Files found: {files.Count}");
-
-                    files.ForEach(x =>
-                    {                
-                        filesPathResult.Add(x);
-                    });
-                }
+                files = Directory.GetFiles(_pathConfigurations.Value.RootPathIn, "*.dat", SearchOption.AllDirectories);
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-            }
+                _logger.LogError(ex.Message);
+            }            
 
-            return filesPathResult;
+            if ((files != null) && (files.Count() > 0))
+            {
+                Console.WriteLine($"Files found: {files.Count()}");
+
+                foreach (var file in files)
+                {
+                    yield return file;
+                }
+            }            
         }
 
-        public void SaveFile(SummaryResult summaryResult, Configuration configuration)
+        public void SaveFile(SummaryResult summaryResult)
         {
             try
             {
@@ -50,7 +55,7 @@ namespace DaOfSales.Domain
                 stringBuilder.AppendLine($"ID of the most expensive sale: {summaryResult.IdExpensiveSale}");
                 stringBuilder.AppendLine($"Worst salesman ever: {summaryResult.WorstSalesman}");
 
-                var destination = Path.Combine(configuration.RootPathOut, summaryResult.FileName);
+                var destination = Path.Combine(_pathConfigurations.Value.RootPathOut, summaryResult.FileName);
 
                 using (StreamWriter swriter = new StreamWriter(destination))
                 {
@@ -59,25 +64,28 @@ namespace DaOfSales.Domain
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                _logger.LogError(ex.Message);
             }
         }
 
-        public void MoveForGarbage(string filePath, Configuration configuration)
+        public string MoveForProcessing(string filePath)
         {
+            string destination = string.Empty;
             try
             {
-                var destination = Path.Combine(configuration.RootPathGarbage, Path.GetFileName(filePath));
+                destination = Path.Combine(_pathConfigurations.Value.RootPathProcessing, Path.GetFileName(filePath));
                 if (File.Exists(destination))
                 {
                     File.Delete(destination);
                 }
-                File.Move(filePath, destination);
+                File.Move(filePath, destination);                
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                _logger.LogError(ex.Message);
             }
+
+            return destination;
         }
     }
 }

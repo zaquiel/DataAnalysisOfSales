@@ -15,9 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DaOfSales.Domain", "DaOfSal
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DaOfSales.Test", "DaOfSales.Test\DaOfSales.Test.csproj", "{B109A5E9-DDC2-46F8-A92A-AA3A6C1DDC30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependencyInjection", "DependencyInjection\DependencyInjection.csproj", "{B8F48C2E-51C5-488D-82DE-8742528E3C48}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DaOfSales.App", "DaOsSales.App\DaOfSales.App.csproj", "{789040AE-1DE0-45DE-A36D-86ADDB1FA7D2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DaOfSales.Worker", "DaOfSales.Worker\DaOfSales.Worker.csproj", "{31AC6A97-D6AE-407B-9712-9314F3B1A318}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +43,10 @@ Global
 		{789040AE-1DE0-45DE-A36D-86ADDB1FA7D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{789040AE-1DE0-45DE-A36D-86ADDB1FA7D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{789040AE-1DE0-45DE-A36D-86ADDB1FA7D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31AC6A97-D6AE-407B-9712-9314F3B1A318}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31AC6A97-D6AE-407B-9712-9314F3B1A318}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31AC6A97-D6AE-407B-9712-9314F3B1A318}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31AC6A97-D6AE-407B-9712-9314F3B1A318}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
